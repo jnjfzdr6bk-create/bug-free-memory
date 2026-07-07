@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Лучи Миссии · По ту сторону расклада</title>
+<style>
+  :root{
+    --bg:#08060f;
+    --bg2:#100c1d;
+    --panel:#161029;
+    --panel2:#1d1533;
+    --line:#332a4d;
+    --gold:#cba86a;
+    --gold-soft:#e7cf95;
+    --text:#ece8f6;
+    --muted:#a9a2c4;
+    --muted2:#7a7299;
+    --accent:#a674f0;
+    --magenta:#c46bff;
+    --good:#6fce9f;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--text);
+    background:var(--bg);
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.5), transparent),
+      radial-gradient(1px 1px at 70% 60%, rgba(230,210,255,.4), transparent),
+      radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,.3), transparent),
+      radial-gradient(1.5px 1.5px at 85% 20%, rgba(196,107,255,.5), transparent),
+      radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,.3), transparent),
+      radial-gradient(circle at 50% 8%, rgba(166,116,240,.14), transparent 55%),
+      linear-gradient(180deg,#0b0818,#08060f 45%);
+    background-attachment:fixed;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .serif{font-family:Georgia,"Times New Roman",serif;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px;}
+  a{color:var(--gold-soft);}
+
+  /* HERO with Мир arcanum background */
+  .hero{position:relative;overflow:hidden;}
+  .hero-bg{
+    position:absolute;inset:-6% -6% 0 -6%;
+    background-position:center 22%;
+    background-size:cover;
+    background-repeat:no-repeat;
+    /* placeholder cosmic gradient until "Мир" image is embedded */
+    background-image:
+      radial-gradient(circle at 50% 30%, rgba(196,107,255,.35), transparent 45%),
+      radial-gradient(circle at 25% 60%, rgba(120,80,220,.25), transparent 50%),
+      radial-gradient(circle at 78% 55%, rgba(90,60,180,.22), transparent 50%),
+      linear-gradient(180deg,#150f2e,#0b0818);
+    filter:blur(7px) saturate(1.15) brightness(.5);
+    transform:scale(1.06);
+    opacity:.6;
+    z-index:0;
+  }
+  .hero-bg::after{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse at 50% 40%, transparent 25%, rgba(8,6,15,.55) 75%),
+      linear-gradient(180deg, rgba(8,6,15,.35) 0%, rgba(8,6,15,.2) 45%, var(--bg) 96%);
+  }
+  .hero > *{position:relative;z-index:1;}
+
+  header.top{text-align:center;padding:62px 22px 26px;}
+  .brand{
+    display:inline-block;font-size:12.5px;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--gold-soft);border:1px solid rgba(203,168,106,.4);border-radius:40px;
+    padding:8px 20px;background:rgba(20,14,34,.55);backdrop-filter:blur(2px);
+  }
+  h1.title{
+    font-family:Georgia,serif;font-weight:400;font-size:clamp(40px,8vw,74px);
+    margin:26px 0 6px;letter-spacing:.02em;
+    background:linear-gradient(180deg,#fff,var(--gold-soft) 55%,var(--gold));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    text-shadow:0 2px 40px rgba(166,116,240,.3);
+  }
+  .subtitle{color:#d8d2ec;max-width:660px;margin:0 auto;font-size:17.5px;text-shadow:0 1px 10px rgba(0,0,0,.6);}
+  .ornament{color:var(--gold);letter-spacing:.5em;margin:20px 0 0;opacity:.8;font-size:14px;}
+
+  section{padding:34px 0;}
+  h2.sec{font-family:Georgia,serif;font-weight:400;font-size:clamp(25px,4vw,35px);text-align:center;margin:0 0 8px;color:#fff;}
+  .sec-lead{text-align:center;color:var(--muted);max-width:700px;margin:0 auto 30px;}
+
+  #intro{padding-top:8px;padding-bottom:46px;}
+  .intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:10px;}
+  .icard{
+    background:linear-gradient(180deg,rgba(29,21,51,.92),rgba(16,12,29,.92));
+    border:1px solid var(--line);border-radius:16px;padding:24px;backdrop-filter:blur(3px);
+  }
+  .icard h3{margin:0 0 8px;font-family:Georgia,serif;font-weight:400;font-size:22px;color:var(--gold-soft);}
+  .icard p{margin:0;color:var(--muted);font-size:15.5px;}
+  .icard .big{font-size:30px;color:var(--gold);font-family:Georgia,serif;}
+
+  /* Selector */
+  .selector-box{
+    background:
+      radial-gradient(circle at 50% 0%, rgba(166,116,240,.2), transparent 60%),
+      linear-gradient(180deg,var(--panel2),var(--bg2));
+    border:1px solid var(--line);border-radius:22px;padding:30px 26px 34px;
+    box-shadow:0 30px 90px -40px rgba(166,116,240,.7);
+  }
+  .selector-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:6px;}
+  .field label{display:block;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:9px;}
+  .field label .hint{color:var(--muted2);letter-spacing:.04em;text-transform:none;font-size:12px;}
+  select{
+    width:100%;appearance:none;
+    background:var(--bg) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23cba86a' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>") no-repeat right 16px center;
+    border:1px solid var(--line);color:var(--text);
+    padding:14px 42px 14px 16px;border-radius:12px;font-size:16px;font-family:Georgia,serif;cursor:pointer;
+  }
+  select:focus{outline:none;border-color:var(--accent);}
+
+  /* Custom dropdown (работает на всех устройствах, включая мобильные) */
+  .dd{position:relative;}
+  .dd-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border:1px solid var(--line);color:var(--text);padding:14px 16px;border-radius:12px;font-size:16px;font-family:Georgia,serif;cursor:pointer;text-align:left;-webkit-tap-highlight-color:transparent;}
+  .dd-btn:hover,.dd.open .dd-btn{border-color:var(--accent);}
+  #lbl-luch,#lbl-pod{color:var(--muted2);}
+  #lbl-luch.chosen,#lbl-pod.chosen{color:var(--text);}
+  .dd-arrow{font-style:normal;color:var(--gold);transition:transform .2s;font-size:13px;flex:0 0 auto;}
+  .dd.open .dd-arrow{transform:rotate(180deg);}
+  .dd-list{position:absolute;left:0;right:0;top:calc(100% + 8px);background:var(--panel2);border:1px solid var(--line);border-radius:12px;box-shadow:0 24px 60px -20px #000;max-height:320px;overflow-y:auto;z-index:40;display:none;padding:6px;-webkit-overflow-scrolling:touch;}
+  .dd.open .dd-list{display:block;}
+  .dd-opt{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:9px;cursor:pointer;font-family:Georgia,serif;font-size:16px;color:var(--text);-webkit-tap-highlight-color:transparent;}
+  .dd-opt:hover,.dd-opt:active{background:rgba(166,116,240,.16);}
+  .dd-opt .dd-em{color:var(--gold-soft);width:22px;text-align:center;flex:0 0 auto;}
+  .dd-opt .dd-rn{margin-left:auto;color:var(--muted2);font-size:13px;letter-spacing:.1em;}
+  .result{margin-top:26px;}
+  .result-empty{text-align:center;color:var(--muted2);padding:26px 10px;font-style:italic;}
+
+  .combo-head{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;}
+  .combo-title{font-family:Georgia,serif;font-size:clamp(23px,4vw,32px);color:#fff;text-align:center;}
+  .combo-title b{color:var(--gold-soft);font-weight:400;}
+  .mini-cards{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:26px;}
+
+  .synth p{margin:0 0 14px;font-size:16px;}
+  .synth .why{color:var(--text);}
+  .tag{display:inline-block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;padding:3px 10px;border-radius:20px;border:1px solid var(--line);margin-right:8px;vertical-align:middle;}
+  .tag.why{color:var(--accent);border-color:rgba(166,116,240,.55);}
+  .tag.how{color:var(--gold);border-color:rgba(203,168,106,.55);}
+  .together{background:rgba(203,168,106,.07);border:1px solid rgba(203,168,106,.3);border-radius:14px;padding:18px 20px;margin-top:6px;}
+  .together b{color:var(--gold-soft);font-weight:600;}
+
+  /* Card visual (placeholder / image) — larger */
+  .tcard{
+    width:210px;flex:0 0 auto;border-radius:14px;overflow:hidden;
+    border:1px solid rgba(203,168,106,.35);
+    background:linear-gradient(180deg,#221a3a,#120e20);
+    box-shadow:0 18px 46px -18px rgba(0,0,0,.9), 0 0 0 1px rgba(166,116,240,.12);
+    transition:transform .2s, box-shadow .2s;
+  }
+  .tcard.zoom{cursor:zoom-in;}
+  .tcard.zoom:hover{transform:translateY(-3px);box-shadow:0 26px 60px -20px rgba(166,116,240,.6);}
+  .tcard .frame{
+    aspect-ratio:5/8;position:relative;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:12px;text-align:center;
+    border:1px solid rgba(196,107,255,.3);border-radius:11px;margin:9px;
+    background:
+      radial-gradient(circle at 50% 32%, rgba(196,107,255,.2), transparent 62%),
+      linear-gradient(180deg,#1a1330,#0e0b1c);
+  }
+  .tcard img{display:block;width:calc(100% - 18px);height:auto;aspect-ratio:5/8;object-fit:cover;border-radius:11px;margin:9px;}
+  .tcard .roman{position:absolute;top:10px;left:0;right:0;font-family:Georgia,serif;color:var(--gold);letter-spacing:.14em;font-size:16px;}
+  .tcard .emblem{font-size:52px;line-height:1;filter:drop-shadow(0 0 16px rgba(196,107,255,.5));color:#e9dcff;}
+  .tcard .cname{position:absolute;bottom:12px;left:0;right:0;font-family:Georgia,serif;color:var(--gold-soft);font-size:17px;}
+  .tcard .lbl{position:absolute;bottom:38px;left:0;right:0;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted2);}
+  .tcard.small{width:150px;}
+  .tcard.small .emblem{font-size:38px;}
+  .tcard.small .cname{font-size:14px;bottom:9px;}
+  .tcard.small .roman{font-size:13px;top:7px;}
+  .tcard.small .lbl{bottom:30px;}
+
+  /* Checklist */
+  .checklist{margin-top:8px;}
+  .checklist h4{font-family:Georgia,serif;font-weight:400;font-size:20px;color:var(--gold-soft);margin:26px 0 4px;}
+  .checklist .csub{color:var(--muted);font-size:14px;margin:0 0 14px;}
+  .check-item{display:flex;gap:13px;align-items:flex-start;padding:12px 15px;border:1px solid var(--line);border-radius:12px;margin-bottom:9px;background:var(--panel);cursor:pointer;transition:.18s;user-select:none;}
+  .check-item:hover{border-color:rgba(203,168,106,.45);}
+  .check-item.on{background:rgba(111,206,159,.09);border-color:rgba(111,206,159,.45);}
+  .box{flex:0 0 auto;width:22px;height:22px;border-radius:6px;border:1.5px solid var(--muted2);display:flex;align-items:center;justify-content:center;margin-top:1px;transition:.18s;color:transparent;font-size:14px;font-weight:700;}
+  .check-item.on .box{background:var(--good);border-color:var(--good);color:#08060f;}
+  .check-item span{font-size:15px;color:var(--text);}
+  .meter{margin-top:18px;padding:18px 20px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);text-align:center;}
+  .meter .bar{height:8px;border-radius:8px;background:#2a2442;overflow:hidden;margin:12px 0;}
+  .meter .fill{height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--accent),var(--magenta),var(--gold));transition:width .4s;}
+  .meter .verdict{font-family:Georgia,serif;font-size:18px;color:var(--gold-soft);}
+  .meter .vsub{color:var(--muted);font-size:14px;margin-top:4px;}
+
+  /* Reference grid */
+  .ref-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .ray-cell{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:18px;padding:18px 16px 22px;text-align:center;cursor:pointer;transition:.2s;}
+  .ray-cell:hover{transform:translateY(-4px);border-color:rgba(196,107,255,.5);box-shadow:0 26px 56px -30px rgba(166,116,240,.8);}
+  .ray-cell .tcard{width:100%;max-width:210px;margin:0 auto 14px;}
+  .ray-cell h3{margin:8px 0 2px;font-family:Georgia,serif;font-weight:400;font-size:22px;color:#fff;}
+  .ray-cell .princ{color:var(--gold);font-size:12.5px;letter-spacing:.04em;margin:0 0 8px;}
+  .ray-cell .ess{color:var(--muted);font-size:13.5px;margin:0;}
+  .ray-cell .more{color:var(--gold-soft);font-size:12px;margin-top:12px;letter-spacing:.14em;text-transform:uppercase;}
+
+  /* Modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(6,4,12,.85);backdrop-filter:blur(7px);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:30px 16px;overflow-y:auto;}
+  .modal-bg.open{display:flex;}
+  .modal{max-width:760px;width:100%;background:linear-gradient(180deg,var(--panel2),var(--bg2));border:1px solid var(--line);border-radius:20px;padding:30px 30px 36px;position:relative;box-shadow:0 40px 110px -30px #000;}
+  .modal .close{position:absolute;top:16px;right:18px;font-size:26px;color:var(--muted);cursor:pointer;line-height:1;background:none;border:none;}
+  .modal .close:hover{color:var(--gold);}
+  .m-head{display:flex;gap:26px;align-items:center;flex-wrap:wrap;margin-bottom:8px;}
+  .m-head .tcard{width:220px;}
+  .m-head .txt{flex:1;min-width:220px;}
+  .m-head .txt h3{font-family:Georgia,serif;font-weight:400;font-size:32px;margin:0;color:#fff;}
+  .m-head .txt .p{color:var(--gold);letter-spacing:.05em;font-size:14px;margin:6px 0 0;}
+  .m-head .txt .hb{color:var(--muted2);font-size:13px;margin-top:2px;}
+  .m-block h4{font-family:Georgia,serif;font-weight:400;color:var(--gold-soft);font-size:19px;margin:24px 0 8px;}
+  .m-block p{margin:0;color:var(--text);font-size:15.5px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .chip{background:rgba(203,168,106,.09);border:1px solid var(--line);color:var(--gold-soft);border-radius:20px;padding:6px 13px;font-size:13.5px;}
+  .shadow-box{background:rgba(166,116,240,.08);border:1px solid rgba(166,116,240,.32);border-radius:12px;padding:14px 18px;color:var(--muted);font-size:15px;}
+
+  /* Lightbox for admiring the art */
+  .lightbox{position:fixed;inset:0;background:rgba(4,3,9,.94);display:none;align-items:center;justify-content:center;z-index:80;padding:30px;cursor:zoom-out;}
+  .lightbox.open{display:flex;}
+  .lightbox .lb-inner{max-width:min(560px,92vw);width:100%;text-align:center;}
+  .lightbox img,.lightbox .frame{width:100%;border-radius:16px;box-shadow:0 40px 120px -20px rgba(166,116,240,.6);}
+  .lightbox .frame{aspect-ratio:5/8;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid rgba(196,107,255,.3);background:radial-gradient(circle at 50% 32%, rgba(196,107,255,.2), transparent 62%),linear-gradient(180deg,#1a1330,#0e0b1c);}
+  .lightbox .frame .emblem{font-size:90px;color:#e9dcff;filter:drop-shadow(0 0 22px rgba(196,107,255,.5));}
+  .lightbox .frame .roman{position:absolute;top:16px;font-family:Georgia,serif;color:var(--gold);font-size:22px;letter-spacing:.16em;}
+  .lightbox .frame .cname{position:absolute;bottom:18px;font-family:Georgia,serif;color:var(--gold-soft);font-size:22px;}
+  .lightbox .cap{margin-top:14px;color:var(--gold-soft);font-family:Georgia,serif;font-size:18px;letter-spacing:.02em;}
+
+  footer{text-align:center;padding:44px 22px 60px;color:var(--muted2);border-top:1px solid var(--line);margin-top:30px;}
+  footer .brand{margin-bottom:14px;}
+  footer p{max-width:560px;margin:10px auto;font-size:14px;}
+
+  .divider{height:1px;max-width:120px;margin:0 auto;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.6;}
+  .origins-box{max-width:760px;margin:0 auto;background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:14px;padding:4px 22px;}
+  .origins-box summary{cursor:pointer;list-style:none;font-family:Georgia,serif;font-size:16px;color:var(--gold-soft);padding:16px 0;letter-spacing:.02em;display:flex;align-items:center;gap:10px;}
+  .origins-box summary::-webkit-details-marker{display:none;}
+  .origins-box summary::before{content:"✦";color:var(--gold);font-size:13px;}
+  .origins-box[open] summary{border-bottom:1px solid var(--line);}
+  .origins-box p{color:var(--muted);font-size:15px;margin:16px 0 20px;}
+
+  @media(max-width:760px){
+    .intro-grid,.selector-row{grid-template-columns:1fr;}
+    .ref-grid{grid-template-columns:1fr 1fr;gap:14px;}
+    .modal{padding:24px 20px 30px;}
+    .m-head{gap:18px;}
+    .m-head .tcard{width:150px;margin:0 auto;}
+    .m-head .txt{text-align:center;}
+    .m-head .txt h3{font-size:26px;}
+  }
+  @media(max-width:460px){
+    .ref-grid{grid-template-columns:1fr;}
+    .ray-cell .tcard{max-width:230px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <header class="top">
+    <span class="brand">По ту сторону расклада</span>
+    <h1 class="title serif">Лучи Миссии</h1>
+    <p class="subtitle">Твоя ведущая энергия и то, как ты её проживаешь. Ключ к предназначению — на языке 12 Арканов.</p>
+    <p class="ornament">✦ ⟡ ✦</p>
+  </header>
+
+  <div class="wrap">
+    <section id="intro">
+      <h2 class="sec serif">Что такое Луч Миссии</h2>
+      <p class="sec-lead">Каждая из нас рождается с двумя преобладающими энергиями — <b>Лучом</b> и <b>Подлучом</b>. Это не приговор и не рамка, а твоя природная сила. Когда ты живёшь в согласии с ней, приходят интерес, включённость и лёгкость. Когда сопротивляешься — усталость, разочарование и ощущение «не своей жизни».</p>
+      <div class="intro-grid">
+        <div class="icard">
+          <h3><span class="big">☉</span> Луч — твоё «ПОЧЕМУ»</h3>
+          <p>Глубинная мотивация, из которой ты действуешь. То, ради чего ты на самом деле встаёшь по утрам, даже если сама этого до конца не осознаёшь. Луч отвечает на вопрос: <i>что мной движет по-настоящему?</i></p>
+        </div>
+        <div class="icard">
+          <h3><span class="big">☽</span> Подлуч — твоё «КАК»</h3>
+          <p>Способ, которым тебе легче и приятнее всего реализовать своё «почему». Один и тот же мотив можно проживать очень по-разному — Подлуч подсказывает твой самый естественный путь и инструмент.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- SELECTOR -->
+  <section id="selector">
+    <h2 class="sec serif">Твой ключ: Луч и Подлуч</h2>
+    <p class="sec-lead">Выбери свой Луч и Подлуч, если они у тебя уже определены. Если ещё нет — напиши мне, и мы определим их в личном разборе. А дальше ты увидишь, что именно означает твоё сочетание.</p>
+    <div class="selector-box">
+      <div class="selector-row">
+        <div class="field">
+          <label>Твой Луч <span class="hint">— мотивация, «почему»</span></label>
+          <div class="dd" id="dd-luch">
+            <button type="button" class="dd-btn" onclick="toggleDD('luch',event)"><span id="lbl-luch">— выбери Луч —</span><i class="dd-arrow">▾</i></button>
+            <div class="dd-list" id="list-luch"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Твой Подлуч <span class="hint">— способ, «как»</span></label>
+          <div class="dd" id="dd-pod">
+            <button type="button" class="dd-btn" onclick="toggleDD('pod',event)"><span id="lbl-pod">— выбери Подлуч —</span><i class="dd-arrow">▾</i></button>
+            <div class="dd-list" id="list-pod"></div>
+          </div>
+        </div>
+      </div>
+      <div class="result" id="result">
+        <div class="result-empty">Выбери оба параметра, чтобы раскрыть своё сочетание ✦</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- REFERENCE -->
+  <section id="reference">
+    <h2 class="sec serif">12 Лучей Миссии</h2>
+    <p class="sec-lead">Нажми на любой Луч, чтобы прочитать подробный разбор и пройти чек-лист «Проводишь ли ты эту энергию в своей жизни?». Изображение аркана можно открыть крупно.</p>
+    <div class="ref-grid" id="refGrid"></div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ORIGINS -->
+  <section id="origins">
+    <details class="origins-box">
+      <summary>Об истоках · почему лучей именно 12</summary>
+      <p>В основе — 12 Старших Арканов, каждый из которых воплощает один из принципов Мироздания: раскрытие, знание, воля, красота, единство… В подходе Василия (Сильвера) Дубинина все 12 Лучей <b>равны</b> — среди них нет «тёмных» и «высших». Принцип Луны (воображение) так же необходим миру, как принцип Князя (воля) или Солнца (красота). Сами по себе Лучи не несут ни светлой, ни тёмной окраски — важно лишь, проводишь ли ты свою энергию или гасишь её.</p>
+    </details>
+  </section>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()"><div class="lb-inner" id="lbInner"></div></div>
+
+<footer>
+  <span class="brand">По ту сторону расклада</span>
+  <div class="divider" style="margin:8px auto 18px;"></div>
+  <p>Разбор Лучей Миссии подготовлен на основе подхода Василия (Сильвера) Дубинина и школы «Врата Изиды» (Иссэт Котельникова).</p>
+  <p>Твой персональный Луч и Подлуч определяются индивидуально в личном разборе.</p>
+  <p style="color:var(--gold);margin-top:18px;">✦ Telegram-канал «По ту сторону расклада» ✦</p>
+</footer>
+
+<script>
+/* ============================================================
+   ИЗОБРАЖЕНИЯ АРКАНОВ
+   Когда файлы карт будут доступны, сюда подставляются data-URL
+   (base64). Ключи — id лучей. Пока пусто → показываются рамки.
+   Пример: IMAGES.mag = "data:image/jpeg;base64,....";
+   Отдельно IMAGES.mir используется как фон «геро»-шапки.
+   ============================================================ */
+const GH_JS  = "https://cdn.jsdelivr.net/gh/jnjfzdr6bk-create/bug-free-memory@main/";
+const GH_RAW = "https://raw.githubusercontent.com/jnjfzdr6bk-create/bug-free-memory/main/";
+const IMGFILE = {
+  mag:"IMG_6693.jpeg",
+  jritsa:"IMG_6692.jpeg",
+  imperatritsa:"IMG_6691.jpeg",
+  imperator:"1ED3C567-AD84-4683-907B-2E3FF77D0A82.png",
+  jrets:"IMG_6690.jpeg",
+  sila:"0F8D0BBB-6C83-4011-B314-6CDD2EAF5972.png",
+  knyaz:"IMG_6694.jpeg",
+  zvezda:"33274264-1B42-4CDC-ACB9-4A225C6C11DA.png",
+  luna:"IMG_6688.jpeg",
+  solntse:"E8C27CA6-D8CE-4807-B573-EC8626554F05.png",
+  shut:"4E4C45C5-DF41-4811-80D5-E2EF0C5AD5CD.png",
+  mir:"1BB84F11-4F58-426F-B746-E5FA89423CB7.png"
+};
+const IMAGES = Object.fromEntries(Object.entries(IMGFILE).map(([k,f])=>[k, GH_JS+encodeURIComponent(f)]));
+function rawOf(id){ return IMGFILE[id] ? GH_RAW+encodeURIComponent(IMGFILE[id]) : ""; }
+
+/* ---------- ДАННЫЕ 12 ЛУЧЕЙ ---------- */
+const RAYS = [
+  {
+    id:"mag", name:"Маг", roman:"I", hebrew:"Алеф", emblem:"✦",
+    principle:"Принцип раскрытия потенциала",
+    essence:"Видит в себе, в людях и в ситуациях то, что уже созрело и готово проявиться. От природы умеет быстро схватывать, запускать новое и пробовать множество направлений сразу.",
+    drive:"Тобой движет жажда раскрывать потенциал — свой и чужой: замечать то, что уже созрело, и давать этому старт",
+    method:"через быстрый старт, эксперимент и умение легко браться за новое",
+    luchGoal:"раскрывать потенциал и запускать новое",
+    podluchWay:"через быстрый старт, пробу и множество направлений сразу",
+    strengths:["Видит созревшие возможности","Легко начинает с нуля","Быстро осваивает новое","Вдохновляет попробовать","Мастерица на все руки"],
+    checklist:[
+      "Ты часто первой замечаешь, что идея, человек или проект «созрели» и пора действовать",
+      "Тебе легко начинать новое с нуля, даже без гарантий",
+      "Ты быстро осваиваешь навыки на коротких курсах и мастер-классах",
+      "Тебя тянет пробовать много разного, а не углубляться в одно годами",
+      "Люди приходят к тебе за «толчком», когда сами не решаются начать",
+      "Ты чувствуешь прилив сил именно в момент старта, запуска, первого шага"
+    ],
+    shadow:"Когда ты гасишь этот Луч, ты обесцениваешь свои идеи, ждёшь «идеального момента», который не наступает, и застреваешь, глядя, как другие запускают то, что ты увидела первой.",
+    spheres:["Стартапы и запуски","Наставничество на старте","Пилотные проекты","Всё новое"]
+  },
+  {
+    id:"jritsa", name:"Жрица", roman:"II", hebrew:"Бет", emblem:"☾",
+    principle:"Принцип обретения свойств",
+    essence:"Считывает информацию прямо из Потока, очищая её от эмоций и передавая дальше. Развитая интуиция, ясновидение и аналитический ум.",
+    drive:"Тобой движет стремление получать чистое знание — считывать суть напрямую, без искажений, и передавать её другим",
+    method:"через тонкое интуитивное считывание и точный, беспристрастный анализ",
+    luchGoal:"получать и передавать чистое знание",
+    podluchWay:"через интуитивное считывание и беспристрастный анализ",
+    strengths:["Считывает информацию из Потока","Отделяет факты от эмоций","Сильная интуиция и ясновидение","Аналитический ум","Хранит и передаёт знание"],
+    checklist:[
+      "Ты «просто знаешь» ответ раньше, чем можешь объяснить, откуда",
+      "Ты умеешь отделять факты от эмоциональной окраски",
+      "Люди говорят, что ты будто видишь их насквозь",
+      "Тебя тянет к анализу, исследованию, поиску истины",
+      "Ты чувствуешь себя проводником информации, а не её источником",
+      "В тишине и уединении к тебе приходят самые точные ответы"
+    ],
+    shadow:"Когда ты не проводишь эту энергию, ты глушишь интуицию, не доверяешь своим «знаниям» и обесцениваешь дар, требуя логических доказательств тому, что и так очевидно.",
+    spheres:["Аналитика и исследования","Журналистика","Прорицание","Консультирование"]
+  },
+  {
+    id:"imperatritsa", name:"Императрица", roman:"III", hebrew:"Гимель", emblem:"❀",
+    principle:"Принцип естественных взаимодействий",
+    essence:"Всегда в моменте, интуитивно считывает свойства людей и вещей, в живом контакте с телом и чувствами. Рядом с ней становится уютно и легко.",
+    drive:"Тобой движет желание жить в моменте, чувствовать и создавать живой, естественный контакт со всем вокруг",
+    method:"через чувственность, естественность и умение создавать тепло и уют",
+    luchGoal:"создавать живой естественный контакт и заботу",
+    podluchWay:"через чувственность, тепло и присутствие в моменте",
+    strengths:["В контакте с телом и чувствами","Создаёт уют и комфорт","Интуитивно чувствует людей","Естественность","Заботливость"],
+    checklist:[
+      "Тебе важно, чтобы вокруг было красиво, комфортно, вкусно, тепло",
+      "Ты хорошо чувствуешь настроение и потребности людей рядом",
+      "Рядом с тобой люди расслабляются и «оттаивают»",
+      "Ты доверяешь телу и ощущениям больше, чем сухой логике",
+      "Ты живёшь скорее «здесь и сейчас», чем планами на пять лет",
+      "Забота о других и о пространстве наполняет тебя, а не истощает"
+    ],
+    shadow:"Когда ты не проводишь эту энергию, ты теряешь контакт с телом, живёшь «в голове», запрещаешь себе удовольствие и заботу, ощущаешь пустоту и отчуждённость.",
+    spheres:["Гостеприимство и забота","Тело, еда, красота","Отношения","Всё чувственное"]
+  },
+  {
+    id:"imperator", name:"Император / Белая Карта", roman:"IV", hebrew:"Далет", emblem:"⛬",
+    principle:"Принцип формирования устойчивых тенденций",
+    essence:"Концентрируется на сути и динамике процессов, ищет сходство, игнорируя различия, и переносит рабочие методы из сферы в сферу. Белая Карта — способность увидеть глубинную структуру за формой.",
+    drive:"Тобой движет стремление увидеть суть и закономерность процессов и выстроить из этого устойчивую, надёжную основу",
+    method:"через системное мышление, перенос работающих методов и опору на суть",
+    luchGoal:"выстраивать устойчивые основы и видеть суть",
+    podluchWay:"через системный взгляд и перенос работающих методов",
+    strengths:["Видит суть и динамику","Находит общее в разном","Переносит методы между сферами","Создаёт устойчивость","Мыслит стратегически"],
+    checklist:[
+      "Ты быстро видишь суть процесса за деталями и частностями",
+      "Ты замечаешь: «это работает вот так — значит, сработает и здесь»",
+      "Тебе важна устойчивость и надёжная основа, а не разовый всплеск",
+      "Ты умеешь переносить приёмы из одной области в совершенно другую",
+      "Люди опираются на тебя как на «твёрдую точку»",
+      "Тебя наполняет наведение порядка и создание работающих структур"
+    ],
+    shadow:"Когда ты не проводишь эту энергию, ты становишься ригидной, цепляешься за контроль ради контроля, боишься нового и превращаешь опору в застой.",
+    spheres:["Стратегия и управление","Системы и структуры","Основательные проекты","Долгосрочное планирование"]
+  },
+  {
+    id:"jrets", name:"Жрец", roman:"V", hebrew:"Хе", emblem:"⚚",
+    principle:"Принцип обучения и обмена",
+    essence:"Входит в тесный эмпатический контакт, переживает чувства другого как свои, изучает дело до мельчайших тонкостей и передаёт ученикам. Скрупулёзное, трудолюбивое мастерство.",
+    drive:"Тобой движет стремление глубоко освоить дело и передать его другим, войдя в живой контакт душа-в-душу",
+    method:"через глубокое погружение, эмпатию и терпеливую передачу знания",
+    luchGoal:"осваивать в глубину и передавать другим",
+    podluchWay:"через эмпатию, наставничество и внимание к тонкостям",
+    strengths:["Глубокая эмпатия","Осваивает дело до тонкостей","Учитель и наставник","Трудолюбие","Хранит мастерство и традицию"],
+    checklist:[
+      "Ты не успокаиваешься, пока не разберёшься в теме до мелочей",
+      "Тебе естественно объяснять, учить, наставлять",
+      "Ты чувствуешь других так, будто проживаешь их состояние",
+      "Тебе важно передать знание, а не держать его при себе",
+      "Люди приходят к тебе за пониманием и поддержкой",
+      "Кропотливая, тщательная работа тебя не утомляет, а увлекает"
+    ],
+    shadow:"Когда ты не проводишь эту энергию, ты выгораешь от чужих эмоций, не выстраиваешь границ, обесцениваешь свой опыт и перестаёшь делиться, копя знание «в стол».",
+    spheres:["Преподавание и наставничество","Помогающие профессии","Ремесло и мастерство","Экспертиза"]
+  },
+  {
+    id:"sila", name:"Сила", roman:"XI", hebrew:"Каф", emblem:"⚜",
+    principle:"Принцип движения к цели",
+    essence:"От природы умеет организовывать и администрировать: встраиваться в любую систему или создавать новую, грамотно распределять ресурсы и вести дело к результату.",
+    drive:"Тобой движет стремление приводить в движение и порядок — выстраивать работающие системы и вести дело к результату",
+    method:"через организацию, управление ресурсами и настойчивое движение к цели",
+    luchGoal:"выстраивать эффективные системы и доводить до результата",
+    podluchWay:"через организацию, дисциплину и управление ресурсами",
+    strengths:["Прирождённый дар организатора","Управляет ресурсами","Строит и встраивается в системы","Доводит до конца","Администрирование"],
+    checklist:[
+      "Ты видишь, как навести порядок в хаосе и «кто что должен делать»",
+      "Тебе легко распределять ресурсы, задачи и людей",
+      "Ты доводишь начатое до результата, а не бросаешь на полпути",
+      "Тебя наполняет, когда система заработала слаженно",
+      "Люди зовут тебя, когда нужно «всё организовать»",
+      "Ты умеешь встроиться в структуру или построить новую с нуля"
+    ],
+    shadow:"Когда ты не проводишь эту энергию, ты буксуешь, тонешь в мелочах, тратишь силу на контроль ради контроля и загоняешь себя и других излишней жёсткостью.",
+    spheres:["Менеджмент и администрирование","Операционное управление","Проекты и процессы","Логистика ресурсов"]
+  },
+  {
+    id:"knyaz", name:"Князь", roman:"XV", hebrew:"Самех", emblem:"⚔",
+    principle:"Принцип воли и выбора",
+    essence:"Формирует концепции реальности — «как правильно и как должно быть». Пробивная сила почти безгранична: тот, кто опирается на волю, способен добиться чего угодно.",
+    drive:"Тобой движет воля — потребность самой решать, как должно быть, и добиваться этого несмотря ни на что",
+    method:"через волю, концентрацию и способность продавливать своё до конца",
+    luchGoal:"утверждать свою картину мира и добиваться желаемого",
+    podluchWay:"через волю, концентрацию и пробивную силу",
+    strengths:["Мощная воля","Пробивная сила","Формирует концепции","Добивается своего","Лидерство и влияние"],
+    checklist:[
+      "Ты знаешь, «как правильно», и готова это отстаивать",
+      "Когда ты чего-то по-настоящему хочешь, тебя почти невозможно остановить",
+      "Ты умеешь сконцентрировать все силы на одной цели",
+      "Люди чувствуют твою внутреннюю силу и идут за тобой",
+      "Ты создаёшь свои правила, а не только следуешь чужим",
+      "Тебя наполняет момент, когда ты добиваешься того, во что верила"
+    ],
+    shadow:"Когда ты давишь волю в себе, ты живёшь по чужим правилам, копишь раздражение — и сила уходит в разрушение, своё или чужое.",
+    spheres:["Лидерство и предпринимательство","Влияние и переговоры","Реформы и прорывы","Всё, что требует воли"]
+  },
+  {
+    id:"zvezda", name:"Звезда", roman:"XVII", hebrew:"Пе", emblem:"✷",
+    principle:"Принцип вовлечённости",
+    essence:"Профессиональное умение достигать. Видит жизнь как череду целей, ищет квесты — чем труднее, тем интереснее — и вовлекает других в реализацию идей и проектов.",
+    drive:"Тобой движет азарт достижения — жизнь как череда целей и квестов, в которые интересно вкладываться и вовлекать других",
+    method:"через азарт, ясную постановку целей и умение зажигать и вовлекать",
+    luchGoal:"достигать целей и вовлекать других в движение",
+    podluchWay:"через азарт, вызовы и заражающую вовлечённость",
+    strengths:["Ставит и берёт цели","Любит трудные вызовы","Вовлекает других","Вынослива в достижении","Вдохновляет идеей"],
+    checklist:[
+      "Тебе нужна цель — без неё жизнь кажется пресной",
+      "Чем труднее задача, тем сильнее азарт (лёгкое — скучно)",
+      "Ты умеешь зажечь других своей идеей и повести за собой",
+      "Ты видишь путь как серию понятных шагов к результату",
+      "Достижение цели даёт тебе больше энергии, чем отдых",
+      "Люди подзаряжаются от твоей вовлечённости и включаются"
+    ],
+    shadow:"Когда ты не проводишь эту энергию, ты гаснешь, теряешь цели, впадаешь в апатию «зачем всё это» — или гонишься за чужими целями, не чувствуя радости.",
+    spheres:["Амбициозные проекты","Спорт и соревнование","Продажи","Всё целевое"]
+  },
+  {
+    id:"luna", name:"Луна", roman:"XVIII", hebrew:"Цади", emblem:"☽",
+    principle:"Принцип разума и веры",
+    essence:"Творит воображаемые миры, философии, художественные и религиозные системы, полные символики. Тяга к творчеству, культуре, магии; часто — сильные способности к маркетингу и анализу.",
+    drive:"Тобой движет сила воображения — потребность творить смыслы, миры и образы, в которые верят другие",
+    method:"через воображение, символизм и создание глубоких смыслов",
+    luchGoal:"творить смыслы, образы и целые миры",
+    podluchWay:"через воображение, символику и глубину подтекста",
+    strengths:["Богатое воображение","Создаёт смыслы и мифы","Чувствует символы","Творчество, искусство, магия","Маркетинг образов"],
+    checklist:[
+      "В твоей голове живут целые миры, образы, сюжеты, идеи",
+      "Ты видишь символы, слои и скрытые смыслы там, где другие — нет",
+      "Тебя тянет к творчеству, культуре, эзотерике, глубине",
+      "Ты умеешь придать вещам смысл и «упаковать» идею так, что в неё верят",
+      "Тебе нужно пространство для фантазии, иначе становится тесно",
+      "Создание нового образа или смысла наполняет тебя вдохновением"
+    ],
+    shadow:"Когда ты не проводишь эту энергию, ты тонешь в иллюзиях и тревоге, путаешь воображаемое с реальным и обесцениваешь свой дар как «пустые фантазии».",
+    spheres:["Искусство и письмо","Эзотерика","Бренд и маркетинг","Всё образное и смысловое"]
+  },
+  {
+    id:"solntse", name:"Солнце", roman:"XIX", hebrew:"Коф", emblem:"☀",
+    principle:"Принцип идеального состояния",
+    essence:"Интуитивно чувствует красоту момента и знает, как идеально показать явление или идею. В расцвете — харизматична и притягательна: звезда сцены, лицо проекта, вдохновляющий лидер.",
+    drive:"Тобой движет чувство красоты и совершенства — потребность являть мир и себя в самом сияющем, идеальном виде",
+    method:"через красоту, харизму и умение ярко и точно показать",
+    luchGoal:"являть красоту и совершенство, светить",
+    podluchWay:"через харизму, вкус и умение показать идеально",
+    strengths:["Чувство красоты","Харизма и притягательность","Умеет показать и подать","Вдохновляет собой","Яркое лидерство"],
+    checklist:[
+      "Ты чувствуешь, как показать вещь, идею или себя в самом лучшем виде",
+      "Люди тянутся к тебе, ты естественно оказываешься в центре",
+      "Тебе важна красота, гармония и эстетика во всём",
+      "Ты расцветаешь, когда тебя видят и признают",
+      "Ты умеешь вдохновлять просто своим состоянием и присутствием",
+      "Момент, когда всё «идеально сложилось», наполняет тебя счастьем"
+    ],
+    shadow:"Когда ты не проводишь эту энергию, ты прячешься, гасишь свет из страха осуждения, впадаешь в перфекционизм «недостаточно хорошо» и не позволяешь себе сиять.",
+    spheres:["Сцена и публичность","Эстетика и стиль","Лицо бренда","Вдохновляющее лидерство"]
+  },
+  {
+    id:"shut", name:"Шут", roman:"0", hebrew:"Шин", emblem:"✺",
+    principle:"Принцип Абсолютного Хаоса",
+    essence:"Подлинная оригинальность и ощущение инаковости — «всё не как у людей» — и виртуозная игра с полем вероятностей, которую часто зовут удачей. Любые границы здесь становятся вызовом.",
+    drive:"Тобой движет свобода и инаковость — потребность жить вне шаблонов и играть с самим полем возможностей",
+    method:"через нестандартность, лёгкость и игру с вероятностями",
+    luchGoal:"жить вне шаблонов и открывать невозможное",
+    podluchWay:"через оригинальность, лёгкость и везение",
+    strengths:["Подлинная оригинальность","Видит лазейки и противоречия","«Удачливость»","Свобода от шаблонов","Неожиданные ходы"],
+    checklist:[
+      "Ты всегда чувствовала себя «не такой, как все» — и это действительно так",
+      "Ты видишь противоречия и лазейки в правилах, которых не замечают другие",
+      "В твоей жизни часто случаются невероятные совпадения и «везение»",
+      "Тебе тесно в жёстких рамках, ты обходишь их легко и естественно",
+      "Ты доверяешь спонтанности больше, чем плану",
+      "Свобода быть собой важнее для тебя, чем стабильность и одобрение"
+    ],
+    shadow:"Когда ты не проводишь эту энергию, ты загоняешь себя в чужие рамки, предаёшь свою инаковость, чувствуешь себя «сломанной» и теряешь ту самую лёгкость и удачу.",
+    spheres:["Новаторство","Нестандартные решения","Творческая свобода","Там, где нужен нешаблонный ход"]
+  },
+  {
+    id:"mir", name:"Мир", roman:"XXI", hebrew:"Тав", emblem:"❂",
+    principle:"Принцип единства",
+    essence:"Хорошо чувствует эгрегоры, в которых находится: считывает формальные и неформальные правила, роли и сценарии. Любит вкладываться в поддержание групп, объединяя и модерируя.",
+    drive:"Тобой движет чувство целого — потребность видеть систему связей и удерживать единство группы, поля, мира",
+    method:"через чувство контекста, ролей и связей внутри целого",
+    luchGoal:"удерживать единство и гармонию целого",
+    podluchWay:"через чувство контекста, правил и ролей в группе",
+    strengths:["Чувствует эгрегоры и поля","Считывает правила и роли","Объединяет людей","Удерживает целое","Модерирует группы"],
+    checklist:[
+      "Ты быстро считываешь «правила игры» и роли в любой группе",
+      "Ты чувствуешь атмосферу коллектива как отдельную живую сущность",
+      "Тебе естественно быть той, кто всех объединяет и примиряет",
+      "Ты видишь картину целиком, а не только отдельные части",
+      "Тебя наполняет, когда группа или система работает как единое целое",
+      "Люди чувствуют себя частью чего-то большего рядом с тобой"
+    ],
+    shadow:"Когда ты не проводишь эту энергию, ты растворяешься в чужих системах, теряешь себя ради «целого», берёшь ответственность за всех и выгораешь.",
+    spheres:["Сообщества и команды","Культура и дипломатия","Модерация групп","Всё про связи и целое"]
+  }
+];
+
+const byId = Object.fromEntries(RAYS.map(r=>[r.id,r]));
+function imgOf(r){ return r.img || IMAGES[r.id] || null; }
+function shortName(r){ return r.name.split(" / ")[0]; }
+
+/* ---------- КАРТОЧКА (изображение / рамка) ---------- */
+function frameInner(r){
+  return `<div class="frame">
+         <div class="roman">${r.roman}</div>
+         <div class="emblem">${r.emblem}</div>
+         <div class="lbl">аркан</div>
+         <div class="cname">${shortName(r)}</div>
+       </div>`;
+}
+function imgTag(r){
+  const src=imgOf(r);
+  return `<img src="${src}" data-raw="${rawOf(r.id)}" data-key="${r.id}" alt="${r.name}" loading="lazy" onerror="imgErr(this)">`;
+}
+/* если jsDelivr не отдал — пробуем raw GitHub, затем рамку */
+function imgErr(el){
+  if(el.dataset.tried!=="raw" && el.dataset.raw){ el.dataset.tried="raw"; el.src=el.dataset.raw; return; }
+  const r=byId[el.dataset.key]; if(r) el.outerHTML=frameInner(r);
+}
+function cardHTML(r, size){
+  const cls = "tcard zoom" + (size==="small" ? " small":"");
+  const inner = imgOf(r) ? imgTag(r) : frameInner(r);
+  return `<div class="${cls}" onclick="event.stopPropagation();openLightbox('${r.id}')">${inner}</div>`;
+}
+
+/* ---------- LIGHTBOX (рассмотреть аркан крупно) ---------- */
+function openLightbox(id){
+  const r=byId[id];
+  const inner = imgOf(r) ? imgTag(r) : `<div class="frame"><div class="roman">${r.roman}</div><div class="emblem">${r.emblem}</div><div class="cname">${shortName(r)}</div></div>`;
+  document.getElementById("lbInner").innerHTML = inner + `<div class="cap">${r.name} · ${r.roman}</div>`;
+  document.getElementById("lightbox").classList.add("open");
+  document.body.style.overflow="hidden";
+}
+function closeLightbox(){
+  document.getElementById("lightbox").classList.remove("open");
+  if(!document.getElementById("modalBg").classList.contains("open")) document.body.style.overflow="";
+}
+
+/* ---------- ЧЕК-ЛИСТ ---------- */
+function checklistHTML(r, ctx){
+  const items = r.checklist.map((t,i)=>`
+    <div class="check-item" data-ctx="${ctx}" data-i="${i}" onclick="toggleCheck(this)">
+      <div class="box">✓</div><span>${t}</span>
+    </div>`).join("");
+  return `<div class="checklist" id="cl-${ctx}">
+    <h4>Проводишь ли ты энергию «${shortName(r)}» в своей жизни?</h4>
+    <p class="csub">Отметь утверждения, которые про тебя. Это не тест на «правильность», а зеркало: где энергия Луча уже течёт, а где ждёт, когда ты ей позволишь.</p>
+    ${items}
+    <div class="meter">
+      <div class="verdict" id="verdict-${ctx}">Отмечено 0 из ${r.checklist.length}</div>
+      <div class="bar"><div class="fill" id="fill-${ctx}"></div></div>
+      <div class="vsub" id="vsub-${ctx}">Отмечай пункты выше ✦</div>
+    </div>
+  </div>`;
+}
+function toggleCheck(el){ el.classList.toggle("on"); updateMeter(el.dataset.ctx); }
+function updateMeter(ctx){
+  const box = document.getElementById("cl-"+ctx);
+  if(!box) return;
+  const items = box.querySelectorAll(".check-item");
+  const total = items.length;
+  const on = box.querySelectorAll(".check-item.on").length;
+  const pct = Math.round(on/total*100);
+  document.getElementById("verdict-"+ctx).textContent = `Отмечено ${on} из ${total}`;
+  document.getElementById("fill-"+ctx).style.width = pct+"%";
+  let msg;
+  if(on===0) msg="Отмечай пункты выше ✦";
+  else if(pct<=33) msg="Пока энергия Луча звучит тихо. Это не «мало» — это приглашение: где в жизни ты могла бы дать ей больше места?";
+  else if(pct<=66) msg="Энергия Луча уже течёт, но местами ты её приглушаешь. Обрати внимание на неотмеченные пункты — там твой рост.";
+  else if(pct<100) msg="Ты хорошо проводишь свой Луч! Осталось совсем немного, чтобы раскрыться в нём полностью.";
+  else msg="Ты живёшь в согласии со своим Лучом — энергия течёт свободно. Именно отсюда приходят интерес, лёгкость и ощущение своей жизни.";
+  document.getElementById("vsub-"+ctx).textContent = msg;
+}
+
+/* ---------- СИНТЕЗ ЛУЧ × ПОДЛУЧ ---------- */
+function synthHTML(luch, pod){
+  const same = luch.id===pod.id;
+  let together;
+  if(same){
+    together = `<div class="together">
+      <b>Луч и Подлуч совпадают — редкий, «чистый» вариант.</b> Энергия «${shortName(luch)}» звучит в тебе без примесей, очень мощно и узнаваемо: твоё «почему» и твоё «как» — это одно и то же. Сила такого сочетания — в кристальной ясности: ты точно знаешь свою природу. Задача — не замыкаться только в ней и позволять себе опираться и на другие грани жизни, чтобы этот единственный Луч не выгорал от перегрузки.
+    </div>`;
+  } else {
+    together = `<div class="together">
+      <b>Вместе это значит:</b> ты стремишься <b>${luch.luchGoal}</b> — но делаешь это <b>${pod.podluchWay}</b>. Там, где Луч «${shortName(luch)}» задаёт цель и смысл, Подлуч «${shortName(pod)}» выбирает инструмент и стиль. Если попробуешь достигать своего «${luch.luchGoal}» чужим, не своим способом — появится усталость и сопротивление. А как только соединяешь мотив Луча с методом Подлуча — приходит то самое состояние потока.
+    </div>`;
+  }
+  return `
+    <div class="combo-head">
+      <div class="combo-title serif"><b>${shortName(luch)}</b> <span style="color:var(--muted2)">×</span> <b>${shortName(pod)}</b></div>
+    </div>
+    <div class="mini-cards">
+      ${cardHTML(luch,"small")}
+      ${cardHTML(pod,"small")}
+    </div>
+    <div class="synth">
+      <p class="why"><span class="tag why">Луч · почему</span> ${luch.drive}. Это твоя глубинная мотивация — то, ради чего ты действуешь на самом деле.</p>
+      <p class="why"><span class="tag how">Подлуч · как</span> Своё «почему» ты реализуешь ${pod.method}. Это твой самый естественный путь и инструмент.</p>
+      ${together}
+    </div>
+    ${checklistHTML(luch, "combo")}
+    <div style="text-align:center;margin-top:24px">
+      <button class="use-btn" onclick="openModal('${luch.id}')" style="background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:#1a1408;border:none;border-radius:30px;padding:12px 26px;font-size:14px;font-weight:600;cursor:pointer;">Подробный разбор Луча «${shortName(luch)}»</button>
+    </div>
+  `;
+}
+
+/* ---------- ВЫПАДАЮЩИЙ СПИСОК (свой, кроссплатформенный) ---------- */
+const sel = {luch:"", pod:""};
+function fillDD(){
+  const opts = which => RAYS.map(r=>
+    `<div class="dd-opt" onclick="pickDD('${which}','${r.id}')">
+       <span class="dd-em">${r.emblem}</span><span>${shortName(r)}</span><span class="dd-rn">${r.roman}</span>
+     </div>`).join("");
+  document.getElementById("list-luch").innerHTML = opts("luch");
+  document.getElementById("list-pod").innerHTML = opts("pod");
+}
+function toggleDD(which, ev){
+  if(ev) ev.stopPropagation();
+  const el=document.getElementById("dd-"+which);
+  document.getElementById("dd-"+(which==="luch"?"pod":"luch")).classList.remove("open");
+  el.classList.toggle("open");
+}
+function setDDLabel(which,id){
+  const l=document.getElementById("lbl-"+which);
+  l.textContent = `${shortName(byId[id])} · ${byId[id].roman}`;
+  l.classList.add("chosen");
+}
+function pickDD(which,id){
+  sel[which]=id;
+  setDDLabel(which,id);
+  document.getElementById("dd-"+which).classList.remove("open");
+  renderResult();
+}
+document.addEventListener("click",()=>{ document.querySelectorAll(".dd.open").forEach(d=>d.classList.remove("open")); });
+
+/* ---------- РЕНДЕР ---------- */
+function renderResult(){
+  const l=sel.luch, p=sel.pod;
+  const box=document.getElementById("result");
+  if(!l||!p){ box.innerHTML=`<div class="result-empty">Выбери оба параметра, чтобы раскрыть своё сочетание ✦</div>`; return; }
+  box.innerHTML = synthHTML(byId[l], byId[p]);
+  updateMeter("combo");
+}
+function renderGrid(){
+  const g=document.getElementById("refGrid");
+  g.innerHTML = RAYS.map(r=>`
+    <div class="ray-cell" onclick="openModal('${r.id}')">
+      ${cardHTML(r)}
+      <h3>${shortName(r)}</h3>
+      <p class="princ">${r.roman} · ${r.principle}</p>
+      <p class="ess">${r.essence.split(".")[0]}.</p>
+      <p class="more">Открыть разбор →</p>
+    </div>
+  `).join("");
+}
+
+/* ---------- МОДАЛКА ---------- */
+function openModal(id){
+  const r=byId[id];
+  const m=document.getElementById("modal");
+  m.innerHTML=`
+    <button class="close" onclick="closeModal()">×</button>
+    <div class="m-head">
+      ${cardHTML(r)}
+      <div class="txt">
+        <h3>${r.name}</h3>
+        <div class="p">Аркан ${r.roman} · ${r.principle}</div>
+        <div class="hb">Буква: ${r.hebrew}</div>
+      </div>
+    </div>
+    <div class="m-block"><h4>Суть Луча</h4><p>${r.essence}</p></div>
+    <div class="m-block"><h4>Что тобой движет</h4><p>${r.drive}.</p></div>
+    <div class="m-block"><h4>Сильные стороны</h4><div class="chips">${r.strengths.map(s=>`<span class="chip">${s}</span>`).join("")}</div></div>
+    <div class="m-block"><h4>Где раскрывается</h4><div class="chips">${r.spheres.map(s=>`<span class="chip">${s}</span>`).join("")}</div></div>
+    <div class="m-block"><h4>Когда энергия не проводится</h4><div class="shadow-box">${r.shadow}</div></div>
+    ${checklistHTML(r, "modal")}
+  `;
+  document.getElementById("modalBg").classList.add("open");
+  document.body.style.overflow="hidden";
+  updateMeter("modal");
+}
+function closeModal(){
+  document.getElementById("modalBg").classList.remove("open");
+  document.body.style.overflow="";
+}
+document.getElementById("modalBg").addEventListener("click",e=>{ if(e.target.id==="modalBg") closeModal(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeLightbox(); closeModal(); } });
+
+/* ---------- ФОН «ГЕРО» (аркан Мир) ---------- */
+function applyHero(){
+  const mir = IMAGES.mir || (byId.mir && byId.mir.img);
+  if(mir){
+    document.getElementById("heroBg").style.backgroundImage =
+      `url("${mir}"),`+
+      `radial-gradient(circle at 50% 30%, rgba(196,107,255,.35), transparent 45%),`+
+      `linear-gradient(180deg,#150f2e,#0b0818)`;
+  }
+}
+
+/* ---------- URL-параметры (персональные ссылки) ---------- */
+function applyParams(){
+  const q=new URLSearchParams(location.search);
+  const l=q.get("luch"), p=q.get("podluch");
+  if(l&&byId[l]){ sel.luch=l; setDDLabel("luch",l); }
+  if(p&&byId[p]){ sel.pod=p;  setDDLabel("pod",p); }
+  if(sel.luch&&sel.pod){ renderResult(); document.getElementById("selector").scrollIntoView(); }
+}
+
+/* ---------- INIT ---------- */
+fillDD();
+renderGrid();
+applyHero();
+applyParams();
+</script>
+</body>
+</html>
